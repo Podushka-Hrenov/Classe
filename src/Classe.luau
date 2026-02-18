@@ -89,10 +89,6 @@ Classe.build = function<M>(meta: M): Classe<M>
 	return setmetatable(self, Cmeta)
 end
 
-local metaMetatable = {
-	__newindex = function() error() end
-}
-
 Classe.meta = function<A, M, E>(attrs: A, meta: M, 
 	extends: E?): (Meta<A, M, E>, Super<E>?)
 	
@@ -108,10 +104,9 @@ Classe.meta = function<A, M, E>(attrs: A, meta: M,
 		end
 	end
 	
-	setmetatable(meta, setmetatable({
+	setmetatable(meta, table.freeze{
 		e = extends,
-		
-	}, metaMetatable))
+	})
 	
 	return meta, extends and extends._init
 end
