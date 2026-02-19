@@ -1,6 +1,7 @@
 export type table = {[any]: any}
 
 export type function sortTable(t: type, pattern: type)
+	pattern = pattern:value()
 	
 	if t:is'intersection' then
 		local components = t:components()
@@ -9,7 +10,7 @@ export type function sortTable(t: type, pattern: type)
 			if not comp:is'table' then continue end
 			
 			for k, v in comp:properties() do
-				if k:value():find(pattern:value()) then 
+				if k:value():find(pattern) then 
 					continue 
 				end
 				
@@ -21,7 +22,7 @@ export type function sortTable(t: type, pattern: type)
 	end
 	
 	for k, v in t:properties() do
-		if not k:value():find(pattern:value()) then 
+		if not k:value():find(pattern) then 
 			continue 
 		end
 		
@@ -37,9 +38,9 @@ export type function moveParams(src: type,
 	--assert(src:is'function'and i:is'singleton'and 
 	--	j:is'singleton'and to:is'function')
 
-	local i = tonumber(i:value()) or 1
-	local t = tonumber(t:value()) or 1
-	local j = tonumber(j:value())
+	i = tonumber(i:value()) or 1
+	t = tonumber(t:value()) or 1
+	j = tonumber(j:value())
 
 	local srcParams = src:parameters()
 	if not srcParams.head then return to end
