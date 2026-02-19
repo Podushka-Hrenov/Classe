@@ -18,6 +18,7 @@ export type ISelf<M> = Types.elementsTo<
 export type Classe<M> = {
 	childs: {[number]: any},
 	overrides: Types.table,
+	parent: index<getmetatable<M>, 'e'>,
 	
 	phantomMeta: getmetatable<M>,
 	meta: {
@@ -25,38 +26,72 @@ export type Classe<M> = {
 	},
 	
 	new: Types.moveParams<Types.find<
-		index<getmetatable<M>, 'm'>, 'init'>, 
+		index<getmetatable<M>, 'm'>, 'construct'>, 
 	'2', nil, '1', () -> Types.sortTable<Self<M>, '^_'>>,
 	
-	_init: Types.find<index<
-		getmetatable<M>, 'm'>, 'init'>,
+	initChain: {(self: Types.table, ...any) -> ()},
+	
+	_construct: Types.find<index<
+		getmetatable<M>, 'm'>, 'construct'>,
 }
 
-local Classe, Cmeta = {}, {}
 
-function Cmeta:__newindex(key: any, value: any)
-	rawset(self.meta.__index, key, value)
+local Classe, __meta = {}, {}
+
+function __meta:__newindex(key: any, value: any)
+	self.meta.__index[key] = value
 	
-	for i, child in self.childs do
+	local childs = self.childs
+	
+	for i = 1, #childs do
+		local child = childs[i]
+		
 		if child.overrides[key] then continue end
 		child.meta.__index[key] = value
 	end
 end
 
+table.freeze(__meta)
+
 Classe.build = function<M>(meta: M): Classe<M>
 	assert(type(meta)=='table', 'Meta must be a table')
 	
-	local init = meta.init
-	assert(init, "Init function not found!")
+	local construct = meta.construct
+	assert(construct, "Construct function not found!")
 	
 	local self = {
 		childs = {},
 		overrides = {},
-		meta = meta
+		meta = meta,
 	}
 	
+	local parent = getmetatable(meta).e
+	setmetatable(meta, nil)
+	
+	self.parent = parent
+	
+	local initChain = nil; if parent then
+		table.insert(parent.childs, self)
+
+		for k, v in parent.meta.__index do
+			if not meta[k] then continue end 
+			self.overrides[k] = true
+		end
+		
+		if meta.init then
+			initChain = table.clone(parent.initChain)
+			table.insert(initChain, meta.init)
+		else
+			initChain = parent.initChain
+		end
+		
+	else initChain = {meta.init} end
+	
+	self.initChain = table.freeze(initChain)
+	
 	meta.__index = {}
-	meta.init = nil; self._init = init
+	meta.construct, meta.init = nil, nil;
+	self._construct = construct
 	
 	for index, data in meta do
 		if type(index) == 'string' and 
@@ -69,24 +104,21 @@ Classe.build = function<M>(meta: M): Classe<M>
 		meta.__index[index] = data
 	end
 	
-	local extends = getmetatable(meta).e
-	setmetatable(meta, nil)
-		
-	if extends then
-		table.insert(extends.childs, self)
-		
-		for k, v in extends.meta.__index do
-			if not meta[k] then continue end 
-			self.overrides[k] = true
-		end
-	end
+	local initChainLen = #initChain
 	
 	function self.new(...: any)
-		local obj = {}; init(obj, ...)
-		return setmetatable(obj, meta)
+		local obj = {}; construct(obj, ...)
+		setmetatable(obj, meta)
+		
+		for i = 1, initChainLen do
+			initChain[i](obj)
+		end
+		
+		return obj
 	end
 	
-	return setmetatable(self, Cmeta)
+	setmetatable(self, __meta)
+	return table.freeze(self)
 end
 
 Classe.meta = function<A, M, E>(attrs: A, meta: M, 
@@ -105,10 +137,10 @@ Classe.meta = function<A, M, E>(attrs: A, meta: M,
 	end
 	
 	setmetatable(meta, table.freeze{
-		e = extends,
+		e = extends,	
 	})
 	
-	return meta, extends and extends._init
+	return meta, extends and extends._construct
 end
 
-return Classe
+return table.freeze(Classe)
