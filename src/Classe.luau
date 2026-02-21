@@ -79,15 +79,23 @@ Classe.build = function<M>(meta: M): Classe<M>
 		end
 		
 		if meta.init then
-			initChain = table.clone(parent.initChain)
+			initChain = if parent.initChaing then 
+				table.clone(parent.initChain)
+			else {}
+		
 			table.insert(initChain, meta.init)
+			table.freeze(initChain)
 		else
 			initChain = parent.initChain
 		end
 		
-	else initChain = {meta.init} end
+	else 
+		initChain = if meta.init then 
+			table.freeze{meta.init} 
+		else nil 
+	end
 	
-	self.initChain = table.freeze(initChain)
+	self.initChain = initChain
 	
 	meta.__index = {}
 	meta.construct, meta.init = nil, nil;
@@ -104,17 +112,26 @@ Classe.build = function<M>(meta: M): Classe<M>
 		meta.__index[index] = data
 	end
 	
-	local initChainLen = #initChain
-	
-	function self.new(...: any)
-		local obj = {}; construct(obj, ...)
-		setmetatable(obj, meta)
-		
-		for i = 1, initChainLen do
-			initChain[i](obj)
+	if initChain then
+		local initChainLen = #initChain
+
+		function self.new(...: any)
+			local obj = {}; construct(obj, ...)
+			setmetatable(obj, meta)
+
+			for i = 1, initChainLen do
+				initChain[i](obj)
+			end
+
+			return obj
 		end
-		
-		return obj
+	else
+		function self.new(...: any)
+			local obj = {}; construct(obj, ...)
+			setmetatable(obj, meta)
+
+			return obj
+		end
 	end
 	
 	setmetatable(self, __meta)
@@ -130,10 +147,10 @@ Classe.meta = function<A, M, E>(attrs: A, meta: M,
 		assert(type(extends)=='table',
 			'Extender must be a table')
 		
-		for k, fn in extends.meta.__index do
-			if meta[k] then continue end
-			meta[k] = fn
-		end
+		local copied = table.clone(extends.meta.__index)
+		for k, fn in meta do copied[k] = fn end
+		
+		meta = copied
 	end
 	
 	setmetatable(meta, table.freeze{
