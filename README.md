@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Creator Store](https://img.shields.io/badge/Creator%20Store-Classe-brightgreen)](https://create.roblox.com/store/asset/86601565246465/Classe)
-[![GitHub](https://img.shields.io/badge/github-Podushka--Hrenov%2FClasse-181717?logo=github)](https://github.com/Podushka-Hrenov/Classe)
+[![DevForum](https://img.shields.io/badge/DevForum-Classe-E2231A?logo=roblox)](https://devforum.roblox.com/t/-/4371297)
 
 ![Classe Banner](https://devforum-uploads.s3.dualstack.us-east-2.amazonaws.com/uploads/original/5X/1/1/e/a/11ea6db11e63f8daaf7866617f0b2f3eabb080a8.png)
 
@@ -17,9 +17,7 @@ Classe solves class organization, typing, and performance issues in Luau. It aut
 
 ## Autocomplete Demo
 
-<div style="position: relative; width: 100%; padding-bottom: 56.25%">
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/QEZ2Zko1608?si=hxvQobBdScI1ApnL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-</div>
+[![Watch the video](https://img.youtube.com/vi/QEZ2Zko1608/maxresdefault.jpg)](https://www.youtube.com/watch?v=QEZ2Zko1608)
 
 ---
 
