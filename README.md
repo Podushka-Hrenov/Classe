@@ -10,13 +10,14 @@
 
 Classe solves class organization, typing, and performance issues in Luau. It automatically infers object types — including inheritance — without requiring manual type definitions or metatable boilerplate. It also avoids `__index` chains for better method call performance.
 
-> ⚠️ **Requirement:** The **Beta Luau Type Solver** must be enabled in Roblox Studio settings.
+> [!WARNING]
+> The **Beta Luau Type Solver** must be enabled in Roblox Studio settings.
 
 ---
 
 ## Autocomplete Demo
 
-[![Autocomplete Demo](https://img.youtube.com/vi/QEZ2Zko1608/maxresdefault.jpg)](https://www.youtube.com/watch?v=QEZ2Zko1608)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/QEZ2Zko1608?si=hxvQobBdScI1ApnL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ---
 
@@ -86,11 +87,11 @@ return Classe.build(Rifle)
 
 Declares the shape of a class. Returns the meta table, and optionally the parent's `_construct` as `super`.
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `attrs` | `table` | Type-level hint for instance attributes — no runtime effect |
-| `meta` | `table` | Table where you define `construct`, `init`, and methods |
-| `extends` | `Classe?` | Optional parent class to inherit from |
+| Parameter | Type      | Description                                                 |
+| --------- | --------- | ----------------------------------------------------------- |
+| `attrs`   | `table`   | Type-level hint for instance attributes — no runtime effect |
+| `meta`    | `table`   | Table where you define `construct`, `init`, and methods     |
+| `extends` | `Classe?` | Optional parent class to inherit from                       |
 
 ---
 
@@ -98,32 +99,32 @@ Declares the shape of a class. Returns the meta table, and optionally the parent
 
 Builds and returns a frozen class object.
 
-| Field | Description |
-|-------|-------------|
-| `MyClass.new(...)` | Creates an instance. Calls `construct`, sets metatable, then runs the `init` chain |
-| `MyClass.meta` | Internal meta table (`__index` holds all methods) |
-| `MyClass.parent` | Reference to the parent class, if any |
-| `MyClass.childs` | List of classes that extend this one |
-| `MyClass.overrides` | Keys this class explicitly overrides from its parent |
+| Field               | Description                                                                        |
+| ------------------- | ---------------------------------------------------------------------------------- |
+| `MyClass.new(...)`  | Creates an instance. Calls `construct`, sets metatable, then runs the `init` chain |
+| `MyClass.meta`      | Internal meta table (`__index` holds all methods)                                  |
+| `MyClass.parent`    | Reference to the parent class, if any                                              |
+| `MyClass.childs`    | List of classes that extend this one                                               |
+| `MyClass.overrides` | Keys this class explicitly overrides from its parent                               |
 
 ---
 
 ## `construct` vs `init`
 
-| Function | Signature | Purpose |
-|----------|-----------|---------|
-| `construct(self, ...)` | Receives all `.new(...)` args | **Required.** Sets up instance fields. |
-| `init(self)` | No extra args | **Optional.** Post-construction setup. Runs for every class in the hierarchy, top-down. |
+| Function               | Signature                     | Purpose                                                                                 |
+| ---------------------- | ----------------------------- | --------------------------------------------------------------------------------------- |
+| `construct(self, ...)` | Receives all `.new(...)` args | **Required.** Sets up instance fields.                                                  |
+| `init(self)`           | No extra args                 | **Optional.** Post-construction setup. Runs for every class in the hierarchy, top-down. |
 
 ---
 
 ## Type Helpers
 
-| Type | Usage |
-|------|-------|
-| `Self<M>` | Full self type (attributes + methods). Use for regular methods. |
-| `ISelf<M>` | Self with all attributes typed as `any`. Use inside `construct`. |
-| `Classe<M>` | Type of the built class object itself. |
+| Type        | Usage                                                            |
+| ----------- | ---------------------------------------------------------------- |
+| `Self<M>`   | Full self type (attributes + methods). Use for regular methods.  |
+| `ISelf<M>`  | Self with all attributes typed as `any`. Use inside `construct`. |
+| `Classe<M>` | Type of the built class object itself.                           |
 
 ---
 
