@@ -39,13 +39,16 @@ export type Classe<M> = {
 local Classe, __meta = {}, {}
 
 function __meta:__newindex(key: any, value: any)
+	if value == nil then
+		value = self.parent.meta.__index[key]
+		self.overrides[key] = nil
+	else
+		self.overrides[key] = true
+	end
+	
 	self.meta.__index[key] = value
 	
-	local childs = self.childs
-	
-	for i = 1, #childs do
-		local child = childs[i]
-		
+	for i, child in self.childs do
 		if child.overrides[key] then continue end
 		child.meta.__index[key] = value
 	end
@@ -74,7 +77,9 @@ Classe.build = function<M>(meta: M): Classe<M>
 		table.insert(parent.childs, self)
 
 		for k, v in parent.meta.__index do
-			if not meta[k] then continue end 
+			if meta[k] == nil then meta[k] = v
+				continue 
+			end 
 			self.overrides[k] = true
 		end
 		
@@ -102,7 +107,7 @@ Classe.build = function<M>(meta: M): Classe<M>
 	self._construct = construct
 	
 	for index, data in meta do
-		if type(index) == 'string' and 
+		if type(index)=='string'and
 			index:find('^__') then
 			
 			continue
@@ -142,16 +147,6 @@ Classe.meta = function<A, M, E>(attrs: A, meta: M,
 	extends: E?): (Meta<A, M, E>, Super<E>?)
 	
 	assert(type(meta)=='table', 'Meta must be a table')
-	
-	if extends then
-		assert(type(extends)=='table',
-			'Extender must be a table')
-		
-		local copied = table.clone(extends.meta.__index)
-		for k, fn in meta do copied[k] = fn end
-		
-		meta = copied
-	end
 	
 	setmetatable(meta, table.freeze{
 		e = extends,	
