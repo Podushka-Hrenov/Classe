@@ -17,7 +17,9 @@ Classe solves class organization, typing, and performance issues in Luau. It aut
 
 ## Autocomplete Demo
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/QEZ2Zko1608?si=hxvQobBdScI1ApnL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<div style="position: relative; width: 100%; padding-bottom: 56.25%">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/QEZ2Zko1608?si=hxvQobBdScI1ApnL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
 
 ---
 
