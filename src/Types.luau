@@ -87,6 +87,41 @@ export type function setproperty(t: type, key: type, value: type)
 	return t
 end
 
+export type function intersectionToTable(t: type)
+	if not t:is'intersection' then return t end
+	
+	local components = t:components()
+	local result = types.newtable()
+		
+	for i, comp in components do
+		if not comp:is'table' then continue end
+		
+		for k, v in comp:properties() do
+			result:setproperty(k, v.write)
+		end
+	end
+	
+	return result
+end
+
+local a: intersectionToTable<any & {f: string} & {e: number}>
+
+export type function joinTable(t1: type, t2: type)
+	if not t1:is'table' and not t2:is'table' then 
+		return types.any
+	end
+	
+	if t2:is'table' then 
+		if not t1:is'table' then return t2 end
+		
+		for k, v in t2:properties() do
+			t1:setproperty(k, v.write)
+		end
+	end
+	
+	return t1
+end
+
 export type function find(t: type, key: type)
 	if not (t:is'table' or t:is'intersection') then
 		return types.any
