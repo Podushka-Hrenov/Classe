@@ -27,7 +27,7 @@ export type Classe<M> = {
 	
 	new: Types.moveParams<Types.find<
 		index<getmetatable<M>, 'm'>, 'construct'>, 
-	'2', nil, '1', () -> Types.sortTable<Self<M>, '^_'>>,
+	'2', nil, '1', () -> Self<M>>,
 	
 	initChain: {(self: Types.table, ...any) -> ()},
 	
