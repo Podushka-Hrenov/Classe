@@ -6,7 +6,7 @@ type Meta<A, M, E> = setmetatable<M, {
 	e: E
 }>
 
-type Super<E> = Types.moveParams<index<E, '_init'>
+type Super<E> = Types.moveParams<index<E, '_construct'>
 	, '1', nil, '1', () -> ()>
 
 export type Self<M> = index<getmetatable<M>, 'a'>
@@ -84,7 +84,7 @@ Classe.build = function<M>(meta: M): Classe<M>
 		end
 		
 		if meta.init then
-			initChain = if parent.initChaing then 
+			initChain = if parent.initChain then 
 				table.clone(parent.initChain)
 			else {}
 		
